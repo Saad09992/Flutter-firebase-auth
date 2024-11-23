@@ -53,6 +53,7 @@ class AppThemes {
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: Colors.black),
       filled: true,
       fillColor: Colors.grey[200],
       border: OutlineInputBorder(
@@ -108,6 +109,7 @@ class AppThemes {
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: Colors.black),
       filled: true,
       fillColor: Colors.grey[800],
       border: OutlineInputBorder(

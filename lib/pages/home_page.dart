@@ -15,6 +15,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: const CustomAppBar(title: "Home"),
       drawer: const CustomDrawer(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [],
+      ),
     );
   }
 }

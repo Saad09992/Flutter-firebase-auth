@@ -8,15 +8,27 @@ plugins {
 android {
     namespace = "com.example.firebase_auth_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion "25.1.8937393"
+
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        // sourceCompatibility = JavaVersion.VERSION_1_8
+        // targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8" // Correct format for Gradle
+        jvmTarget = 17
+    }
+
+    signingConfigs{
+        debug{
+            keyAlias 'androiddebugKey'
+            keyPassword 'android'
+            storeFile file('upload-myKey.jks')
+            storePassword 'android'
+        }
     }
 
     defaultConfig {
@@ -29,7 +41,7 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             signingConfig = signingConfigs.debug
         }
     }

@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   final Rx<User?> _user = Rx<User?>(null);
   final RxBool isLoading = false.obs;
@@ -115,7 +117,7 @@ class AuthController extends GetxController {
           errorMessage = "Error: ${e.message}";
       }
 
-      Utils.errorMessage(errorMessage, context);
+      // Utils.errorMessage(errorMessage, context);
       return false;
     } catch (e) {
       Utils.errorMessage("An unexpected error occurred", context);
@@ -134,9 +136,11 @@ class AuthController extends GetxController {
 
       if (res.user != null) {
         Utils.successMessage("Account created successfully", context);
-        Get.offAllNamed('/home');
+        Get.offAllNamed(RoutesName.home);
         return true;
       }
+      Get.offAllNamed(RoutesName.home);
+
       return false;
     } on FirebaseAuthException catch (e) {
       String errorMessage = "An error occurred during sign up";
@@ -170,12 +174,33 @@ class AuthController extends GetxController {
 
   Future<void> signOut(BuildContext context) async {
     try {
+      // Check if the user is signed in with Google
+      final googleUser = await _googleSignIn.signInSilently();
+      if (googleUser != null) {
+        await _googleSignIn.signOut();
+      }
+
       await _firebaseAuth.signOut();
       await _clearAuthData();
       Utils.successMessage("Successfully logged out", context);
-      Navigator.pushNamed(context, RoutesName.signin);
+      // Navigator.pushNamed(context, RoutesName.signin);
+      Get.offAllNamed(RoutesName.signin);
     } catch (e) {
       Utils.errorMessage("Error signing out", context);
     }
+  }
+
+  Future<void> signInWithGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    AuthCredential cred = GoogleAuthProvider.credential(
+        accessToken: googleAuth!.accessToken, idToken: googleAuth!.idToken);
+
+    UserCredential userCreds =
+        await FirebaseAuth.instance.signInWithCredential(cred);
+    print(userCreds.user.toString());
+    Get.offAllNamed(RoutesName.home);
   }
 }

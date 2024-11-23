@@ -130,37 +130,103 @@ class _SignInPageState extends State<SignInPage> {
 
                     const SizedBox(height: 24),
 
-                    // Sign Up Button
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _authController.signInWithEmailPassword(
-                              _emailController.text,
-                              _passwordController.text,
-                              context);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    // Sign In Button
+                    Obx(() => ElevatedButton(
+                          onPressed: _authController.isLoading.value
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _authController.signInWithEmailPassword(
+                                        _emailController.text,
+                                        _passwordController.text,
+                                        context);
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _authController.isLoading.value
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                        )),
+                    const SizedBox(height: 16),
+
+                    // OR Divider
+                    const Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                        Expanded(child: Divider()),
+                      ],
                     ),
                     const SizedBox(height: 16),
 
-                    // Sign In Link
+                    // Google Sign In Button
+                    Obx(() => OutlinedButton.icon(
+                          onPressed: () {
+                            _authController.signInWithGoogle();
+                          },
+                          icon: _authController.isLoading.value
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Image.asset(
+                                  'assets/images/google_logo.png',
+                                  height: 24,
+                                ),
+                          label: const Text(
+                            'Continue with Google',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            side: const BorderSide(color: Colors.grey),
+                          ),
+                        )),
+
+                    const SizedBox(height: 16),
+
+                    // Sign Up Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Dont have an account?'),
+                        const Text('Don\'t have an account?'),
                         TextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, RoutesName.signup);
